@@ -1,0 +1,71 @@
+#  Define your text data
+text = "Artificial intelligence is the future of technology. Artificial intelligence is powerful."
+
+#  Preprocess the text
+# Convert all characters to lowercase for uniformity
+text = text.lower()
+
+# Remove punctuation
+text = text.replace('.', '')
+
+# Split the sentence into individual words
+words = text.split()
+
+#  Create a dictionary of word pairs (bigrams)
+
+word_pairs = {}  # Dictionary to store the word pairs
+
+# Loop through each word and its next word
+for i in range(len(words) - 1):
+    current_word = words[i]
+    next_word = words[i + 1]
+
+    # If the word is already in the dictionary, append the next word
+    if current_word in word_pairs:
+        word_pairs[current_word].append(next_word)
+    else:
+        # If the word is not in the dictionary, create a new entry
+        word_pairs[current_word] = [next_word]
+
+
+#  Function to predict the next words
+def predict_next_word(seed, count=6):
+    """
+    Predicts 'count' number of words based on the seed word.
+
+    Parameters:
+    - seed: starting word
+    - count: number of words to predict
+
+    Returns:
+    - A string containing the generated text
+    """
+    result = seed  # The final result sentence
+    current = seed  # The word we are currently predicting from
+
+    for _ in range(count):
+        # Check if the current word has any known next words
+        next_words = word_pairs.get(current)
+
+        if not next_words:
+            # If there are no known next words, stop prediction
+            break
+
+        # Pick the first word in the list of next words (simple logic)
+        next_word = next_words[0]
+
+        # Add it to the result
+        result += " " + next_word
+
+        # Update current word for the next loop
+        current = next_word
+
+    return result
+
+
+#  Use the prediction function
+seed_word = "artificial"
+generated_text = predict_next_word(seed_word, 6)
+
+# Print the generated text
+print("Generated text:", generated_text)
